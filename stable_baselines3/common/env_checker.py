@@ -6,7 +6,13 @@ import numpy as np
 from gymnasium import spaces
 
 from stable_baselines3.common.preprocessing import check_for_nested_spaces, is_image_space_channels_first
-from stable_baselines3.common.vec_env import DummyVecEnv, VecCheckNan
+
+torch_available = False
+try:
+    from stable_baselines3.common.vec_env import DummyVecEnv, VecCheckNan
+    torch_available = True
+except ImportError:
+    print("Torch not available; skipping vector env tests.")
 
 
 def _is_numpy_array_space(space: spaces.Space) -> bool:
@@ -109,6 +115,8 @@ def _check_unsupported_spaces(env: gym.Env, observation_space: spaces.Space, act
 
 def _check_nan(env: gym.Env) -> None:
     """Check for Inf and NaN using the VecWrapper."""
+    if not torch_available:
+        return
     vec_env = VecCheckNan(DummyVecEnv([lambda: env]))
     vec_env.reset()
     for _ in range(10):

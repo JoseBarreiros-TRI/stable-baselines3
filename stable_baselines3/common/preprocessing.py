@@ -1,10 +1,15 @@
+from ast import Import
 import warnings
 from typing import Dict, Tuple, Union
 
 import numpy as np
-import torch as th
 from gymnasium import spaces
-from torch.nn import functional as F
+
+try:
+    import torch as th
+    from torch.nn import functional as F
+except ImportError:
+    pass  # Let any function calls that use torch fail naturally.
 
 
 def is_image_space_channels_first(observation_space: spaces.Box) -> bool:
@@ -90,10 +95,10 @@ def maybe_transpose(observation: np.ndarray, observation_space: spaces.Space) ->
 
 
 def preprocess_obs(
-    obs: th.Tensor,
+    obs,
     observation_space: spaces.Space,
     normalize_images: bool = True,
-) -> Union[th.Tensor, Dict[str, th.Tensor]]:
+):
     """
     Preprocess observation to be to a neural network.
     For images, it normalizes the values by dividing them by 255 (to have values in [0, 1])

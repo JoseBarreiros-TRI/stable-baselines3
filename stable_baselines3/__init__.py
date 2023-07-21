@@ -1,13 +1,19 @@
 import os
 
-from stable_baselines3.a2c import A2C
-from stable_baselines3.common.utils import get_system_info
-from stable_baselines3.ddpg import DDPG
-from stable_baselines3.dqn import DQN
-from stable_baselines3.her.her_replay_buffer import HerReplayBuffer
-from stable_baselines3.ppo import PPO
-from stable_baselines3.sac import SAC
-from stable_baselines3.td3 import TD3
+def not_loaded(name):
+    raise ImportError(f"{name} not in Drake's internal stable_baselines3")
+
+def make_not_loaded(name):
+    return lambda *args, **kwargs: not_loaded(name)
+
+A2C = make_not_loaded("A2C")
+get_system_info = make_not_loaded("get_system_info")
+DDPG = make_not_loaded("DDPG")
+DQN = make_not_loaded("DQN")
+HerReplayBuffer = make_not_loaded("HerReplayBuffer")
+PPO = make_not_loaded("PPO")
+SAC = make_not_loaded("SAC")
+TD3 = make_not_loaded("TD3")
 
 # Read version from file
 version_file = os.path.join(os.path.dirname(__file__), "version.txt")
